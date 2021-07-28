@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <title>Front End Test - Greenthumb</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />    
+    <link rel="stylesheet" href="./index.scss" />
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+
+  <body>  
+    <section class="banner">
+      <h2>green thumb.</h2>
+      <h1>Find your</br> next green </br>friend</h1>
+      <img src="images/icons/arrow-down.svg" alt="arrow down" class="arrowdown"/>
+      <img class="img-left-leaves d-sm-none" src="images/hero/desktop/left-leaves.png" alt="left leaves"/>
+      <img class="img-plant-person d-sm-none" src="images/hero/desktop/plantperson.png" alt="plant person"/>
+      <img class="img-right-leaves d-sm-none" src="images/hero/desktop/right-leaves.png"  alt="right leaves"/>
+      <img class="img-top-leaves d-md-none" src="images/hero/mobile/mobile-leaves.png"  alt="plant person"/>
+      <img class="img-mobile-plant-person d-md-none" src="images/hero/mobile/mobile-plantperson.png"  alt="top leaves"/>
+    </section>
+
+    <section class="filters">
+      <div>
+        <img src="images/illustrations/sun.png" alt="sun"/>
+        <p>
+          <strong>1.</strong>
+          Set the amount of <strong>sunlight</strong> your plant will get.
+        </p>
+        <select name="sun" id="sun-select" placeholder="Select...">
+          <option selected="selected">Select...</option>
+          <option value="no">No sunlight</option>
+          <option value="low">Low sunlight</option>
+          <option value="high">High sunlight</option>
+        </select>
+      </div>
+      <div>
+        <img src="images/illustrations/wateringcan.png" alt="wateringcan"/>
+        <p>
+          <strong>2.</strong>
+          How often do you want to <strong>water</strong> your plant?
+        </p>
+        <select name="water"  id="water-select" placeholder="Select...">
+          <option selected="selected">Select...</option>
+          <option value="rarely">Rarely</option>
+          <option value="regularly">Regularly</option>
+          <option value="daily">Daily</option>
+        </select>
+      </div>
+      <div>
+        <img src="images/illustrations/dog.png" alt="dog"/>
+        <p>
+          <strong>3.</strong>
+          Do you have pets? Do they  <strong>chew</strong>plants?.
+        </p>
+        <select name="pets" id="pets-select" placeholder="Select...">
+          <option selected="selected">Select...</option>
+          <option value="true">No/They don't care</option>
+          <option value="false">Yes</option>
+        </select>
+      </div>
+    </section>
+ 
+
+    <section class="results" id="cards-result">
+      <div class="no-results">
+        <div>
+          <h1>No results yet...</h1>
+          <p>Use the filters above to find</br> the plant that best fits your </br>environment :)</p>
+        </div>
+        <div>
+          <img src="images/illustrations/no-results.png" alt="No results"/>
+        </div>
+      </div>         
+    </section>
+  </body>
+</html>
+
+<script>
+
+  let sun = "no"
+  let water = "regularly"
+  let pets = "false"
+
+  document.getElementById('sun-select').addEventListener('change', function() {
+    sun = this.value
+    callAPI()
+  });
+
+  document.getElementById('water-select').addEventListener('change', function() {
+    water = this.value
+    callAPI()
+  });
+
+  document.getElementById('pets-select').addEventListener('change', function() {
+    pets = this.value
+    callAPI()
+  });
+
+  const callAPI = async () => {
+    const  url = `https://front-br-challenges.web.app/api/v2/green-thumb/?sun=${sun}&water=${water}&pets=${pets}`;
+
+    fetch(url).then((response) => response.json()).then((plants) => {
+
+        let html = `
+        <img src="images/illustrations/pick.png" alt="pick"/>
+        <h1>Our picks for you</h1>
+        <div class="cards-area" >`
+         
+        plants.forEach(plant => {        
+
+          html += `
+          <div class="card ${plant.staff_favorite == true ? 'favorite': ''} ">
+            ${plant.staff_favorite == true ? '<label>Staff favorite</label>': ''}             
+            <img src="${plant.url}" alt="${plant.name}" />
+            <div>
+              <h1>${plant.name}</h1>
+              <div class="info">
+                <p><strong>$${plant.price}</strong></p>
+                <div>
+                  ${ plant.toxicity == true ?
+                    ('<img src="images/icons/toxic.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.toxicity == false ?
+                    ('<img src="images/icons/pet.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.sun == "no" ?
+                    ('<img src="images/icons/no-sun.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.sun == "low" ?
+                    ('<img src="images/icons/low-sun.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.sun == "high" ?
+                    ('<img src="images/icons/low-sun.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.water == "regularly" ?
+                    ('<img src="images/icons/3-drops.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.water == "daily" ?
+                    ('<img src="images/icons/2-drops.svg" alt="Plant name" />') : ''
+                  } 
+                  ${ plant.water == "rarely" ?
+                    ('<img src="images/icons/1-drop.svg" alt="Plant name" />') : ''
+                  } 
+                </div>
+              </div>
+            </div>
+          </div> 
+          `
+        });
+
+        html += `</div>`
+        html += `<button onclick="backTop()"><img src="images/icons/arrow-up.svg" alt="top"/>back to the top</button>`
+        
+        let temp = document.createElement('div');
+        temp.innerHTML = html;
+        document.getElementById('cards-result')
+
+        let section = document.getElementById('cards-result')
+        section.innerHTML = ""
+        section.appendChild(temp)
+        html = "";
+
+    });
+  }
+
+  const backTop = () => {
+    window.scrollTo(0, 0)
+  }
+</script>
