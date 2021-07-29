@@ -31,12 +31,16 @@
           <strong>1.</strong>
           Set the amount of <strong>sunlight</strong> your plant will get.
         </p>
-        <select name="sun" id="sun-select" placeholder="Select...">
-          <option selected="selected">Select...</option>
-          <option value="no">No sunlight</option>
-          <option value="low">Low sunlight</option>
-          <option value="high">High sunlight</option>
-        </select>
+        <div class="dropdown" onclick="showDropdown(this)">
+          <div class="droptoggle">
+            <p>Select...<span></span></p>
+          </div>
+          <div class="options d-none"  id="sun-select">
+            <p data-value="no" class="item">No sunlight</p>
+            <p data-value="low" class="item">Low sunlight</p>
+            <p data-value="high" class="item">High sunlight</p>
+          </div>
+        </div>
       </div>
       <div>
         <img src="images/illustrations/wateringcan.png" alt="wateringcan"/>
@@ -44,12 +48,16 @@
           <strong>2.</strong>
           How often do you want to <strong>water</strong> your plant?
         </p>
-        <select name="water"  id="water-select" placeholder="Select...">
-          <option selected="selected">Select...</option>
-          <option value="rarely">Rarely</option>
-          <option value="regularly">Regularly</option>
-          <option value="daily">Daily</option>
-        </select>
+        <div class="dropdown"  onclick="showDropdown(this)">
+          <div class="droptoggle">
+            <p>Select...<span></span></p>
+          </div>
+          <div class="options d-none" id="water-select">
+            <p data-value="rarely" class="item">Rarely</p>
+            <p data-value="regularly" class="item">Regularly</p>
+            <p data-value="daily" class="item">Daily</p>
+          </div>
+        </div>
       </div>
       <div>
         <img src="images/illustrations/dog.png" alt="dog"/>
@@ -57,13 +65,19 @@
           <strong>3.</strong>
           Do you have pets? Do they  <strong>chew</strong>plants?.
         </p>
-        <select name="pets" id="pets-select" placeholder="Select...">
-          <option selected="selected">Select...</option>
-          <option value="true">No/They don't care</option>
-          <option value="false">Yes</option>
-        </select>
+        <div class="dropdown" onclick="showDropdown(this)">
+          <div class="droptoggle">
+            <p>Select...<span></span></p>
+          </div>
+          <div class="options d-none" id="pets-select" >
+            <p data-value="false" class="item">No/They don't care</p>
+            <p data-value="true" class="item">Yes</p>
+          </div>
+        </div>
       </div>
     </section>
+
+
  
 
     <section class="results" id="cards-result">
@@ -86,22 +100,75 @@
   let water = "regularly"
   let pets = "false"
 
-  document.getElementById('sun-select').addEventListener('change', function() {
-    sun = this.value
-    callAPI()
-  });
+  function showDropdown(element){
+    element.querySelector('.options').classList.toggle("d-none");
+  }
 
-  document.getElementById('water-select').addEventListener('change', function() {
-    water = this.value
-    callAPI()
-  });
 
-  document.getElementById('pets-select').addEventListener('change', function() {
-    pets = this.value
-    callAPI()
-  });
+  var sun_select = document.getElementById('sun-select')
+  var itens = sun_select.getElementsByClassName("item");
+
+  for (var i = 0; i < itens.length; i++) {
+
+    itens[i].addEventListener("click", function() {
+
+      sun = this.getAttribute('data-value')
+
+      var current = document.getElementsByClassName("active");
+      if(current[0]){
+        current[0].className = current[0].className.replace(" active", "");
+      }
+      this.className += " active";
+
+      callAPI()
+      
+    });
+  }
+
+
+  var water_select = document.getElementById('water-select')
+  var itens = water_select.getElementsByClassName("item");
+
+  for (var i = 0; i < itens.length; i++) {
+
+    itens[i].addEventListener("click", function() {
+
+      water = this.getAttribute('data-value')
+
+      var current = document.getElementsByClassName("active");
+      if(current[0]){
+        current[0].className = current[0].className.replace(" active", "");
+      }
+      this.className += " active";
+
+      callAPI()
+      
+    });
+  }
+
+
+  var pets_select = document.getElementById('pets-select')
+  var itens = pets_select.getElementsByClassName("item");
+
+  for (var i = 0; i < itens.length; i++) {
+
+    itens[i].addEventListener("click", function() {
+
+      pets = this.getAttribute('data-value')
+
+      var current = document.getElementsByClassName("active");
+      if(current[0]){
+        current[0].className = current[0].className.replace(" active", "");
+      }
+      this.className += " active";
+
+      callAPI()
+      
+    });
+  }
 
   const callAPI = async () => {
+
     const  url = `https://front-br-challenges.web.app/api/v2/green-thumb/?sun=${sun}&water=${water}&pets=${pets}`;
 
     fetch(url).then((response) => response.json()).then((plants) => {
