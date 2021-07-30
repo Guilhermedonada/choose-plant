@@ -16,7 +16,7 @@
     <section class="banner">
       <h2>green thumb.</h2>
       <h1>Find your</br> next green </br>friend</h1>
-      <img src="images/icons/arrow-down.svg" alt="arrow down" class="arrowdown"/>
+      <img src="images/icons/arrow-down.svg" alt="arrow down" class="arrowdown" onclick="backBottom()"/>
       <img class="img-left-leaves d-sm-none" src="images/hero/desktop/left-leaves.png" alt="left leaves"/>
       <img class="img-plant-person d-sm-none" src="images/hero/desktop/plantperson.png" alt="plant person"/>
       <img class="img-right-leaves d-sm-none" src="images/hero/desktop/right-leaves.png"  alt="right leaves"/>
@@ -33,7 +33,7 @@
         </p>
         <div class="dropdown" onclick="showDropdown(this)">
           <div class="droptoggle">
-            <p>Select...<span></span></p>
+            <p><span id="sun-selected">Select...</span><span></span></p>
           </div>
           <div class="options d-none"  id="sun-select">
             <p data-value="no" class="item">No sunlight</p>
@@ -50,7 +50,7 @@
         </p>
         <div class="dropdown"  onclick="showDropdown(this)">
           <div class="droptoggle">
-            <p>Select...<span></span></p>
+            <p><span id="water-selected">Select...</span><span></span></p>
           </div>
           <div class="options d-none" id="water-select">
             <p data-value="rarely" class="item">Rarely</p>
@@ -67,7 +67,7 @@
         </p>
         <div class="dropdown" onclick="showDropdown(this)">
           <div class="droptoggle">
-            <p>Select...<span></span></p>
+            <p><span id="pets-selected">Select...</span><span></span></p>
           </div>
           <div class="options d-none" id="pets-select" >
             <p data-value="false" class="item">No/They don't care</p>
@@ -76,10 +76,6 @@
         </div>
       </div>
     </section>
-
-
- 
-
     <section class="results" id="cards-result">
       <div class="no-results">
         <div>
@@ -100,28 +96,26 @@
   let water = "regularly"
   let pets = "false"
 
-  function showDropdown(element){
+  const showDropdown = (element) => {
     element.querySelector('.options').classList.toggle("d-none");
+    element.querySelector('.droptoggle').classList.toggle("open");
   }
-
 
   var sun_select = document.getElementById('sun-select')
   var itens = sun_select.getElementsByClassName("item");
 
   for (var i = 0; i < itens.length; i++) {
-
     itens[i].addEventListener("click", function() {
 
       sun = this.getAttribute('data-value')
-
       var current = document.getElementsByClassName("active");
       if(current[0]){
         current[0].className = current[0].className.replace(" active", "");
       }
       this.className += " active";
+      document.getElementById('sun-selected').innerHTML = this.innerHTML
 
-      callAPI()
-      
+      callAPI()      
     });
   }
 
@@ -130,19 +124,17 @@
   var itens = water_select.getElementsByClassName("item");
 
   for (var i = 0; i < itens.length; i++) {
-
     itens[i].addEventListener("click", function() {
 
       water = this.getAttribute('data-value')
-
       var current = document.getElementsByClassName("active");
       if(current[0]){
         current[0].className = current[0].className.replace(" active", "");
       }
       this.className += " active";
+      document.getElementById('water-selected').innerHTML = this.innerHTML
 
-      callAPI()
-      
+      callAPI()      
     });
   }
 
@@ -151,19 +143,17 @@
   var itens = pets_select.getElementsByClassName("item");
 
   for (var i = 0; i < itens.length; i++) {
-
     itens[i].addEventListener("click", function() {
 
       pets = this.getAttribute('data-value')
-
       var current = document.getElementsByClassName("active");
       if(current[0]){
         current[0].className = current[0].className.replace(" active", "");
       }
       this.className += " active";
+      document.getElementById('pets-selected').innerHTML = this.innerHTML
 
-      callAPI()
-      
+      callAPI()      
     });
   }
 
@@ -172,6 +162,8 @@
     const  url = `https://front-br-challenges.web.app/api/v2/green-thumb/?sun=${sun}&water=${water}&pets=${pets}`;
 
     fetch(url).then((response) => response.json()).then((plants) => {
+
+        if(plants){
 
         let html = `
         <img src="images/illustrations/pick.png" alt="pick"/>
@@ -232,10 +224,18 @@
         section.appendChild(temp)
         html = "";
 
+        } else {
+          alert("Something wrong with the server.")
+        }
+
     });
   }
 
   const backTop = () => {
     window.scrollTo(0, 0)
+  }
+
+  const backBottom = () => {
+    window.scrollTo(0, document.body.scrollHeight)
   }
 </script>

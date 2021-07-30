@@ -65,6 +65,7 @@ body {
 
 .banner .arrowdown {
   z-index: 2;
+  cursor: pointer;
 }
 
 .banner .img-left-leaves {
@@ -159,7 +160,7 @@ body {
   display: inline-block;
 }
 
-.dropdown p span {
+.dropdown p span:last-child {
   top: 50%;
   position: absolute;
   width: 30px;
@@ -169,7 +170,9 @@ body {
   transition: all 0.2s ease;
 }
 
-.dropdown p span::before {
+.dropdown p span:last-child::before {
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
   content: " ";
   position: absolute;
   background-color: var(--gray-700);
@@ -180,7 +183,9 @@ body {
   width: 50%;
 }
 
-.dropdown p span::after {
+.dropdown p span:last-child::after {
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
   content: " ";
   position: absolute;
   background-color: var(--gray-700);
@@ -210,6 +215,16 @@ body {
 .dropdown .options p:hover {
   background: var(--gren-200);
   color: #fff;
+}
+
+.dropdown .droptoggle.open span:last-child::before {
+  -webkit-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+
+.dropdown .droptoggle.open span:last-child::after {
+  -webkit-transform: rotate(-135deg);
+          transform: rotate(-135deg);
 }
 
 .results {
